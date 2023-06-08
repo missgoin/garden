@@ -49,7 +49,7 @@ FINAL_ZIP_ALIAS=Karenulgar-${TANGGAL}.zip
 ##----------------------------------------------------------##
 # Specify compiler.
 
-COMPILER=azure
+COMPILER=proton
 
 ##----------------------------------------------------------##
 # Specify Linker
