@@ -49,7 +49,7 @@ FINAL_ZIP_ALIAS=Karenulgar-${TANGGAL}.zip
 ##----------------------------------------------------------##
 # Specify compiler.
 
-COMPILER=clang9
+COMPILER=aosp
 
 ##----------------------------------------------------------##
 # Specify Linker
@@ -152,7 +152,7 @@ function exports() {
         
         elif [ -d ${KERNEL_DIR}/clang9 ];
            then
-               export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/clang9/bin/clang --version | grep version | sed "s|clang version ||")    
+               export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/clang9/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')    
         
         elif [ -d ${KERNEL_DIR}/aosp-clang ];
             then
@@ -300,19 +300,19 @@ START=$(date +"%s")
            make -kj$(nproc --all) O=out \
 	       ARCH=arm64 \
 	       CC=clang \
-           HOSTCC=clang \
-	       HOSTCXX=clang++ \
+           #HOSTCC=clang \
+	       #HOSTCXX=clang++ \
 	       CLANG_TRIPLE=aarch64-linux-gnu- \
 	       CROSS_COMPILE=aarch64-linux-android- \
 	       CROSS_COMPILE_ARM32=arm-linux-androideabi- \
-	       LD=${LINKER} \
-	       AR=llvm-ar \
-	       NM=llvm-nm \
-	       OBJCOPY=llvm-objcopy \
-	       OBJDUMP=llvm-objdump \
-           STRIP=llvm-strip \
-	       READELF=llvm-readelf \
-	       OBJSIZE=llvm-size \
+	       #LD=${LINKER} \
+	       #AR=llvm-ar \
+	       #NM=llvm-nm \
+	       #OBJCOPY=llvm-objcopy \
+	       #OBJDUMP=llvm-objdump \
+           #STRIP=llvm-strip \
+	       #READELF=llvm-readelf \
+	       #OBJSIZE=llvm-size \
 	       V=$VERBOSE 2>&1 | tee error.log
 	fi
 }
