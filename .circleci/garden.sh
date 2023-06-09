@@ -103,21 +103,21 @@ function cloneTC() {
     rm -rf clang_all
     export KERNEL_CLANG_PATH="${KERNEL_DIR}/clang"
     export KERNEL_CLANG="clang"
-    export PATH="$KERNEL_CLANG_PATH/clang/bin:$PATH"
+    export PATH="$KERNEL_CLANG_PATH/bin:$PATH"
     CLANG_VERSION=$(clang --version | grep version | sed "s|clang version ||")
     
     wget https://releases.linaro.org/components/toolchain/binaries/latest-5/aarch64-linux-gnu/gcc-linaro-5.5.0-2017.10-x86_64_aarch64-linux-gnu.tar.xz && tar -xf gcc-linaro-5.5.0-2017.10-x86_64_aarch64-linux-gnu.tar.xz
     mv gcc-linaro-5.5.0-2017.10-x86_64_aarch64-linux-gnu gcc64
     export KERNEL_CCOMPILE64_PATH="${KERNEL_DIR}/gcc64"
     export KERNEL_CCOMPILE64="aarch64-linux-gnu-"
-    export PATH="$KERNEL_CCOMPILE64_PATH/gcc64/bin:$PATH"
+    export PATH="$KERNEL_CCOMPILE64_PATH/bin:$PATH"
     GCC_VERSION=$(aarch64-linux-gnu-gcc --version | grep "(GCC)" | sed 's|.*) ||')
    
     wget https://releases.linaro.org/components/toolchain/binaries/latest-5/arm-linux-gnueabihf/gcc-linaro-5.5.0-2017.10-x86_64_arm-linux-gnueabihf.tar.xz && tar -xf gcc-linaro-5.5.0-2017.10-x86_64_arm-linux-gnueabihf.tar.xz
     mv gcc-linaro-5.5.0-2017.10-x86_64_arm-linux-gnueabihf gcc32
     export KERNEL_CCOMPILE32_PATH="${KERNEL_DIR}/gcc32"
     export KERNEL_CCOMPILE32="arm-linux-gnueabihf-"
-    export PATH="$KERNEL_CCOMPILE32_PATH/gcc32/bin:$PATH"
+    export PATH="$KERNEL_CCOMPILE32_PATH/bin:$PATH"
     
 
 	elif [ $COMPILER = "eva" ];
@@ -230,9 +230,9 @@ START=$(date +"%s")
 	   then
 	       make -j$(nproc --all) O=out \
 	       ARCH=arm64 \
-	       CC=clang \
-           CROSS_COMPILE=aarch64-linux-gnu- \
-           CROSS_COMPILE_ARM32=arm-linux-gnueabihf- \
+	       CC=$KERNEL_CLANG \
+           CROSS_COMPILE=$KERNEL_CCOMPILE64 \
+           CROSS_COMPILE_ARM32=$KERNEL_CCOMPILE32 \
            #LD=${LINKER} \
            #LLVM=1 \
            #LLVM_IAS=1 \
