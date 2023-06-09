@@ -99,10 +99,16 @@ function cloneTC() {
 	elif [ $COMPILER = "clang9" ];
 	then
 	git clone https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/ -b android10-gsi --depth 1 --no-tags --single-branch clang_all
-    mkdir clang9
-    mv clang_all/clang-r353983c clang9
+    mv clang_all/clang-r353983c clang
     rm -rf clang_all
-    PATH="${KERNEL_DIR}/clang9/bin:$PATH"
+    export PATH="${KERNEL_DIR}/clang/bin:$PATH"
+    CLANG_VERSION=$(clang --version | grep version | sed "s|clang version ||")
+    
+    wget https://releases.linaro.org/components/toolchain/binaries/latest-5/aarch64-linux-gnu/gcc-linaro-5.5.0-2017.10-x86_64_aarch64-linux-gnu.tar.xz && tar -xf gcc-linaro-5.5.0-2017.10-x86_64_aarch64-linux-gnu.tar.xz
+    mv gcc-linaro-5.5.0-2017.10-x86_64_aarch64-linux-gnu gcc
+    rm gcc-linaro-5.5.0-2017.10-x86_64_aarch64-linux-gnu.tar.xz
+    export PATH="${KERNEL_DIR}/gcc/bin:$PATH"
+    GCC_VERSION=$(aarch64-linux-gnu-gcc --version | grep "(GCC)" | sed 's|.*) ||')
 
 	elif [ $COMPILER = "eva" ];
 	then
@@ -133,12 +139,12 @@ function cloneTC() {
 function exports() {
 	
         # Export KBUILD_COMPILER_STRING
-        if [ -d ${KERNEL_DIR}/clang ];
-           then
-               export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/clang/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
-               export LD_LIBRARY_PATH="${KERNEL_DIR}/clang/lib:$LD_LIBRARY_PATH"
+    #    if [ -d ${KERNEL_DIR}/clang ];
+    #       then
+    #           export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/clang/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
+    #           export LD_LIBRARY_PATH="${KERNEL_DIR}/clang/lib:$LD_LIBRARY_PATH"
         
-        elif [ -d ${KERNEL_DIR}/gcc64 ];
+        if [ -d ${KERNEL_DIR}/gcc64 ];
            then
                export KBUILD_COMPILER_STRING=$("$KERNEL_DIR/gcc64"/bin/aarch64-elf-gcc --version | head -n 1)       
         
@@ -150,9 +156,6 @@ function exports() {
            then
                export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/cosmic-clang/bin/clang --version | head -n 1 | sed -e 's/  */ /g' -e 's/[[:space:]]*$//' -e 's/^.*clang/clang/')       
         
-        elif [ -d ${KERNEL_DIR}/clang9 ];
-           then
-               export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/clang9/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')    
         
         elif [ -d ${KERNEL_DIR}/aosp-clang ];
             then
@@ -237,8 +240,8 @@ START=$(date +"%s")
 	       ARCH=arm64 \
 	       CC=clang \
            CROSS_COMPILE=aarch64-linux-gnu- \
-           CROSS_COMPILE_ARM32=arm-linux-gnueabi \
-           LD=${LINKER} \
+           #CROSS_COMPILE_ARM32=arm-linux-gnueabi \
+           #LD=${LINKER} \
            #LLVM=1 \
            #LLVM_IAS=1 \
            #AR=llvm-ar \
