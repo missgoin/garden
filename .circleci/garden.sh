@@ -44,7 +44,7 @@ TANGGAL=$(date +"%F%S")
 # Specify Final Zip Name
 ZIPNAME=SUPER.KERNEL
 FINAL_ZIP=${ZIPNAME}-${DEVICE}-${TANGGAL}.zip
-FINAL_ZIP_ALIAS=Karenulgar-${TANGGAL}.zip
+FINAL_ZIP_ALIAS=Karenulgarde-${TANGGAL}.zip
 
 ##----------------------------------------------------------##
 # Specify compiler.
@@ -233,7 +233,7 @@ START=$(date +"%s")
 	       CC=$KERNEL_CLANG \
            CROSS_COMPILE=$KERNEL_CCOMPILE64 \
            CROSS_COMPILE_ARM32=$KERNEL_CCOMPILE32 \
-           #LD=${LINKER} \
+           LD=${LINKER} \
            #LLVM=1 \
            #LLVM_IAS=1 \
            #AR=llvm-ar \
