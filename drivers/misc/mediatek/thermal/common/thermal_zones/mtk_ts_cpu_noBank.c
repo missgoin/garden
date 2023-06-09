@@ -179,7 +179,8 @@ static char g_bind5[20] = TZCPU_INITCFG_TRIP_5_COOLER;
 static char g_bind6[20] = TZCPU_INITCFG_TRIP_6_COOLER;
 static char g_bind7[20] = TZCPU_INITCFG_TRIP_7_COOLER;
 static char g_bind8[20] = TZCPU_INITCFG_TRIP_8_COOLER;
-static char g_bind9[20] = TZCPU_INITCFG_TRIP_9_COOLER;
+// fred
+// static char g_bind9[20] = TZCPU_INITCFG_TRIP_9_COOLER;
 #else
 static char g_bind0[20] = "mtktscpu-sysrst";
 static char g_bind1[20] = "cpu02";
@@ -190,7 +191,7 @@ static char g_bind5[20] = "";
 static char g_bind6[20] = "";
 static char g_bind7[20] = "";
 static char g_bind8[20] = "";
-static char g_bind9[20] = "";
+// static char g_bind9[20] = "";
 #endif
 
 struct mt_gpufreq_power_table_info *mtk_gpu_power;
@@ -489,10 +490,8 @@ static int tscpu_bind
 	} else if (!strcmp(cdev->type, g_bind8)) {
 		table_val = 8;
 		/* tscpu_dprintk("tscpu_bind %s\n", cdev->type); */
-	} else if (!strcmp(cdev->type, g_bind9)) {
-		table_val = 9;
-		/* tscpu_dprintk("tscpu_bind %s\n", cdev->type); */
-	} else {
+	}
+	 else {
 		return 0;
 	}
 
@@ -541,10 +540,8 @@ static int tscpu_unbind
 	} else if (!strcmp(cdev->type, g_bind8)) {
 		table_val = 8;
 		/* tscpu_dprintk("tscpu_unbind %s\n", cdev->type); */
-	} else if (!strcmp(cdev->type, g_bind9)) {
-		table_val = 9;
-		/* tscpu_dprintk("tscpu_unbind %s\n", cdev->type); */
-	} else
+	}
+	else
 		return 0;
 
 
@@ -1049,8 +1046,7 @@ static int tscpu_read(struct seq_file *m, void *v)
 			trip_temp[5], g_THERMAL_TRIP[5], g_bind5,
 			trip_temp[6], g_THERMAL_TRIP[6], g_bind6,
 			trip_temp[7], g_THERMAL_TRIP[7], g_bind7,
-			trip_temp[8], g_THERMAL_TRIP[8], g_bind8,
-			trip_temp[9], g_THERMAL_TRIP[9], g_bind9, interval);
+			trip_temp[8], g_THERMAL_TRIP[8], g_bind8, interval);
 
 	for (i = 0; i < Num_of_GPU_OPP; i++)
 		seq_printf(m, "g %d %d %d\n", i, mtk_gpu_power[i].gpufreq_khz,
@@ -1234,8 +1230,7 @@ static ssize_t tscpu_write
 
 		g_bind0[0] = g_bind1[0] = g_bind2[0] =
 			g_bind3[0] = g_bind4[0] = g_bind5[0] =
-			g_bind6[0] = g_bind7[0] = g_bind8[0] =
-			g_bind9[0] = '\0';
+			g_bind6[0] = g_bind7[0] = g_bind8[0] = '\0';
 
 		for (i = 0; i < 20; i++) {
 			g_bind0[i] = ptr_mtktscpu_data->bind0[i];
@@ -1247,7 +1242,7 @@ static ssize_t tscpu_write
 			g_bind6[i] = ptr_mtktscpu_data->bind6[i];
 			g_bind7[i] = ptr_mtktscpu_data->bind7[i];
 			g_bind8[i] = ptr_mtktscpu_data->bind8[i];
-			g_bind9[i] = ptr_mtktscpu_data->bind9[i];
+			
 		}
 
 #if CPT_ADAPTIVE_AP_COOLER
@@ -1362,7 +1357,7 @@ static ssize_t tscpu_write
 
 		tscpu_dprintk(
 			"cooldev5=%s,cooldev6=%s,cooldev7=%s,cooldev8=%s,cooldev9=%s\n",
-				g_bind5, g_bind6, g_bind7, g_bind8, g_bind9);
+				g_bind5, g_bind6, g_bind7, g_bind8);
 
 
 		for (i = 0; i < num_trip; i++)
