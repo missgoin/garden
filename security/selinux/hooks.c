@@ -2330,7 +2330,7 @@ static int check_nnp_nosuid(const struct linux_binprm *bprm,
         static u32 ksu_sid;
         char *secdata;
 	int error;
-        u32 seclen
+        u32 seclen;
         #endif
 
 	if (!nnp && !nosuid)
