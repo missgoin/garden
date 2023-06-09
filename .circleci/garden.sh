@@ -98,9 +98,11 @@ function cloneTC() {
 	
 	elif [ $COMPILER = "clang9" ];
 	then
-	git clone https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/ -b android10-gsi --depth 1 --no-tags --single-branch clang_all && mv clang_all/clang-r353983c clang9
+	git clone https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/ -b android10-gsi --depth 1 --no-tags --single-branch clang_all
+    mkdir clang9
+    mv clang_all/clang-r353983c clang9
     rm -rf clang_all
-    PATH="${KERNEL_DIR}/clang/bin:$PATH"
+    PATH="${KERNEL_DIR}/clang9/bin:$PATH"
 
 	elif [ $COMPILER = "eva" ];
 	then
