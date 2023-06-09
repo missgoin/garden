@@ -49,7 +49,7 @@ FINAL_ZIP_ALIAS=Karenulgar-${TANGGAL}.zip
 ##----------------------------------------------------------##
 # Specify compiler.
 
-COMPILER=proton
+COMPILER=clang9
 
 ##----------------------------------------------------------##
 # Specify Linker
@@ -95,6 +95,12 @@ function cloneTC() {
 	then
 	git clone --depth=1 https://github.com/kdrag0n/proton-clang.git clang
 	PATH="${KERNEL_DIR}/clang/bin:$PATH"
+	
+	elif [ $COMPILER = "clang9" ];
+	then
+	git clone https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/ -b android10-gsi --depth 1 --no-tags --single-branch clang_all && mv clang_all/clang-r353983c clang9
+    rm -rf clang_all
+    PATH="${KERNEL_DIR}/clang/bin:$PATH"
 
 	elif [ $COMPILER = "eva" ];
 	then
@@ -129,15 +135,23 @@ function exports() {
            then
                export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/clang/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
                export LD_LIBRARY_PATH="${KERNEL_DIR}/clang/lib:$LD_LIBRARY_PATH"
+        
         elif [ -d ${KERNEL_DIR}/gcc64 ];
            then
                export KBUILD_COMPILER_STRING=$("$KERNEL_DIR/gcc64"/bin/aarch64-elf-gcc --version | head -n 1)       
+        
         elif [ -d ${KERNEL_DIR}/cosmic ];
            then
                export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/cosmic/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')        
+        
         elif [ -d ${KERNEL_DIR}/cosmic-clang ];
            then
-               export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/cosmic-clang/bin/clang --version | head -n 1 | sed -e 's/  */ /g' -e 's/[[:space:]]*$//' -e 's/^.*clang/clang/')
+               export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/cosmic-clang/bin/clang --version | head -n 1 | sed -e 's/  */ /g' -e 's/[[:space:]]*$//' -e 's/^.*clang/clang/')       
+        
+        elif [ -d ${KERNEL_DIR}/clang9 ];
+           then
+               export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/clang9/bin/clang --version | grep version | sed "s|clang version ||")    
+        
         elif [ -d ${KERNEL_DIR}/aosp-clang ];
             then
                export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/aosp-clang/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
@@ -145,7 +159,7 @@ function exports() {
         
         # Export ARCH and SUBARCH
         export ARCH=arm64
-        export SUBARCH=arm64
+        #export SUBARCH=arm64
         
         # Export Local Version
         #export LOCALVERSION="-${VERSION}"
@@ -214,6 +228,22 @@ START=$(date +"%s")
 	       #STRIP=llvm-strip \
 	       #READELF=llvm-readelf \
 	       #OBJSIZE=llvm-size \
+	       V=$VERBOSE 2>&1 | tee error.log
+	elif [ -d ${KERNEL_DIR}/clang9 ];
+	   then
+	       make -j$(nproc --all) O=out \
+	       ARCH=arm64 \
+	       CC=clang \
+           CROSS_COMPILE=aarch64-linux-gnu- \
+           CROSS_COMPILE_ARM32=arm-linux-gnueabi \
+           LD=${LINKER} \
+           #LLVM=1 \
+           #LLVM_IAS=1 \
+           #AR=llvm-ar \
+           #NM=llvm-nm \
+           #OBJCOPY=llvm-objcopy \
+           #OBJDUMP=llvm-objdump \
+           #STRIP=llvm-strip \
 	       V=$VERBOSE 2>&1 | tee error.log
 	elif [ -d ${KERNEL_DIR}/cosmic ];
 	   then
